@@ -20,7 +20,8 @@ const opts = {
     password: 'yourbotaccountoauth'
   },
   channels: [
-    // Put your channels here
+    'examplechannelname1',
+    'examplechannelname2'
   ]
 }
 
