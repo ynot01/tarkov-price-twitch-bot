@@ -4,7 +4,7 @@ The goal of this bot is to provide information to chatters and streamers of whic
 
 I use this to run my Twitch bot, tarkovpricerbot.
 
-## Setup
+## Running your own personal bot
 
 - Create a Twitch app at [Twitch's dev console](https://dev.twitch.tv/console). Set the redirect URI to `https://twitchapps.com/tokengen/`. **Take note of the Client ID.** If the "Submit" button doesn't work, it may be because of illegal characters or phrases in the name.
 
