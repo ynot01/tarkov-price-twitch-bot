@@ -40,6 +40,7 @@ https://id.twitch.tv/oauth2/authorize
 
 ### Option 2 (Simpler)
 - Install `ts-node` via the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) command `npm install -g ts-node` and run `ts-node index.ts` in the repo root folder to launch the bot.
+- You may have to run `npm i` once in the project directory to install the required packages.
 
 ## Usage
 
