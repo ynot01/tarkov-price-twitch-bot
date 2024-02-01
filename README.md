@@ -10,7 +10,7 @@ I use this to run my Twitch bot, tarkovpricerbot.
 
 - Create a Twitch account; this will be your bot account. It is recommended that you verify the account with a phone number to avoid complications with being unable to chat without VIP/mod. If you are only intending to use this bot for your own channel, you can just mod it.
 
-- While logged in to the bot's Twitch account, visit copy below URI, replacing `<YOUR TWITCH APP CLIENT ID>` with your Client ID noted in the first step.
+- While logged in to the bot's Twitch account, copy & visit the below URI, replacing `<YOUR TWITCH APP CLIENT ID>` with your Client ID noted in the first step.
 
 ```
 https://id.twitch.tv/oauth2/authorize
