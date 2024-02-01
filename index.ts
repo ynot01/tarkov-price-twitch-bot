@@ -51,6 +51,13 @@ class ApiResponse {
   sellFor?: SellForItem[]
 }
 
+const RUBFormat = Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'RUB',
+  currencyDisplay: 'narrowSymbol', // Display rouble symbol instead of RUB
+  maximumFractionDigits: 0 // No decimal digits
+})
+
 const itemListQuery = gql`
 {
     items {
@@ -102,7 +109,7 @@ function onMessageHandler (channel: string, context: any, msg: string, self: boo
       if (item.error === true) {
         botMsg = `@${username}, that item could not be found.`
       } else {
-        botMsg = `@${username}, the price for ${item.name} is ₽${item.price}.`
+        botMsg = `@${username}, the price for ${item.name} is ${RUBFormat.format(item.price ?? 0)}.`
       }
       void client.say(channel, botMsg)
       console.log(`* Executed "${msg}" command in ${channel}, replied "${botMsg}"`)
