@@ -68,7 +68,6 @@ const itemListQuery = gql`
 `
 let itemList: ItemNamed[] = []
 const search = new JsSearch.Search('name')
-search.indexStrategy = new JsSearch.AllSubstringsIndexStrategy()
 void request('https://api.tarkov.dev/graphql', itemListQuery).then((data: any) => {
   if (data.items === undefined) {
     return
