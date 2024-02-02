@@ -128,7 +128,7 @@ async function priceCheck (query: string): Promise<PriceResponse> {
   const reply = new PriceResponse()
   const tarkovQuery = gql`
   {
-      items(name: "${apiQuery}") {
+      items(name: "${apiQuery.replace('"', '\\"')}") {
           name
           avg24hPrice
           sellFor {
