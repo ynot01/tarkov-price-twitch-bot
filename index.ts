@@ -126,9 +126,10 @@ async function priceCheck (query: string): Promise<PriceResponse> {
     }
   }
   const reply = new PriceResponse()
+  const escapeQuotes = /"/g
   const tarkovQuery = gql`
   {
-      items(name: "${apiQuery.replace('"', '\\"')}") {
+      items(name: "${apiQuery.replace(escapeQuotes, '\\"')}") {
           name
           avg24hPrice
           sellFor {
