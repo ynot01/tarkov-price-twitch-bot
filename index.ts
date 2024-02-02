@@ -68,6 +68,7 @@ const itemListQuery = gql`
 `
 let itemList: ItemNamed[] = []
 const search = new JsSearch.Search('name')
+search.indexStrategy = new JsSearch.AllSubstringsIndexStrategy()
 void request('https://api.tarkov.dev/graphql', itemListQuery).then((data: any) => {
   if (data.items === undefined) {
     return
@@ -97,10 +98,11 @@ function onMessageHandler (channel: string, context: any, msg: string, self: boo
   const commandName = msg.trim().split(' ')[0]
 
   // If the command is known, let's execute it
-  if (commandName === '!p' || commandName === '!price') {
+  if (commandName === '!p' || commandName === '!price' || commandName === '!t' || commandName === '!trader' || commandName === '!traders') {
     if (msg.trim().split(' ').length <= 1) { return } // Ignore if no parameters
     const query = msg.split(' ').slice(1).join(' ').trim()
-    void priceCheck(query).then((item: PriceResponse) => {
+    const traderOnly = commandName === '!t' || commandName === '!trader' || commandName === '!traders'
+    void priceCheck(query, traderOnly).then((item: PriceResponse) => {
       let username: any = 'Unknown'
       if (context.username !== undefined) {
         username = context.username
@@ -117,7 +119,7 @@ function onMessageHandler (channel: string, context: any, msg: string, self: boo
   }
 }
 
-async function priceCheck (query: string): Promise<PriceResponse> {
+async function priceCheck (query: string, traderOnly: boolean = false): Promise<PriceResponse> {
   let apiQuery = query
   if (itemList.length > 0) {
     const searchResult: ItemNamed[] = search.search(query)
@@ -129,7 +131,7 @@ async function priceCheck (query: string): Promise<PriceResponse> {
   const escapeQuotes = /"/g
   const tarkovQuery = gql`
   {
-      items(name: "${apiQuery.replace(escapeQuotes, '\\"')}") {
+      items(limit:1, name: "${apiQuery.replace(escapeQuotes, '\\"')}") {
           name
           avg24hPrice
           sellFor {
@@ -151,7 +153,7 @@ async function priceCheck (query: string): Promise<PriceResponse> {
     let bestVendor: string = ''
     for (let i = 0; i < item.sellFor.length; i++) {
       const price = item.sellFor[i].priceRUB ?? 0
-      if (price > reply.price) {
+      if (price > reply.price && (!traderOnly || item.sellFor[i].vendor?.name !== 'Flea Market')) {
         bestVendor = item.sellFor[i].vendor?.name ?? 'error'
         reply.price = item.sellFor[i].priceRUB ?? 0
       }
