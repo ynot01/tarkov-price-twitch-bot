@@ -45,6 +45,7 @@ https://id.twitch.tv/oauth2/authorize
 ## Usage
 
 Price check: `!p <name>` or `!price <name>` in Twitch Chat where `<name>` is the name of an item.
+
 Trader-only price check: `!t <name>` or `!trader <name>` or `!traders <name>` in Twitch Chat where `<name>` is the name of an item.
 
 ## Thanks
