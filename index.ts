@@ -1,6 +1,7 @@
 import tmi from 'tmi.js'
 import { request, gql } from 'graphql-request'
 import * as JsSearch from 'js-search'
+require('log-timestamp')
 
 /*
 https://id.twitch.tv/oauth2/authorize
