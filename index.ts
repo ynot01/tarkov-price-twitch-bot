@@ -95,7 +95,7 @@ function onMessageHandler (channel: string, context: any, msg: string, self: boo
   if (self) { return } // Ignore messages from the bot
 
   // Remove whitespace from chat message
-  const commandName = msg.trim().split(' ')[0]
+  const commandName = msg.trim().split(' ')[0].toLowerCase()
 
   // If the command is known, let's execute it
   if (commandName === '!p' || commandName === '!price' || commandName === '!t' || commandName === '!trader' || commandName === '!traders') {
