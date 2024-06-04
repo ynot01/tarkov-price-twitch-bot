@@ -15,8 +15,7 @@
     "graphql-request": "^6.1.0",
     "js-search": "^2.0.1",
     "log-timestamp": "^0.3.0",
-    "tmi.js": "^1.8.5",
-    "ts-node": "^10.9.2"
+    "tmi.js": "^1.8.5"
   },
   "devDependencies": {
     "@types/js-search": "^1.4.4",

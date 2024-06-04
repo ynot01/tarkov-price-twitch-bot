@@ -25,12 +25,12 @@ https://id.twitch.tv/oauth2/authorize
 
 - You will receive your OAuth token here. **DO NOT SHARE IT WITH ANYONE.**
 
-- Go into `index.ts`
+- Go into `index.mts`
 
   - Replace the username field containing `yourbotaccountusername` with your bot's username.
-  
+
   - Replace the password field containing `yourbotaccountoauth` with your **OAUTH TOKEN, NOT YOUR PASSWORD.**
-  
+
   - Place your desired channel(s) in the `channels` array. If your channel URL is `twitch.tv/foobar` then it should look like `'foobar'` in the array.
 
 ## Compile & run
@@ -39,7 +39,7 @@ https://id.twitch.tv/oauth2/authorize
 - Install [Docker](https://docs.docker.com/get-docker/) and run `docker compose up --build` (include `-d` to run the container detached from the terminal) to build and launch a container that will run the bot. This is recommended for [dedicated servers](https://www.digitalocean.com/).
 
 ### Option 2 (Simpler)
-- Install `ts-node` via the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) command `npm install -g ts-node` and run `ts-node index.ts` in the repo root folder to launch the bot.
+- Install `tsx` via the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) command `npm install -g tsx` and run `tsx index.mts` in the repo root folder to launch the bot.
 - You may have to run `npm i` once in the project directory to install the required packages.
 
 ## Usage
