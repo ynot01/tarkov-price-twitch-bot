@@ -85,7 +85,11 @@ client.on('message', onMessageHandler)
 client.on('connected', onConnectedHandler)
 
 // Connect to Twitch:
-void client.connect()
+void client.connect().catch(
+  (error: string) => {
+    console.log(`* ${error}`)
+  }
+)
 
 // Called every time a message comes in
 function onMessageHandler (channel: string, context: any, msg: string, self: boolean): void {
