@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "A Twitch bot to price check items",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "tsx index.mts"
   },
   "author": "ynot01",
   "license": "Apache-2.0",
   "dependencies": {
     "@types/node": "^20.11.13",
+    "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "js-search": "^2.0.1",
     "log-timestamp": "^0.3.0",

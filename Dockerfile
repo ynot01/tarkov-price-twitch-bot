@@ -14,8 +14,8 @@ ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
-RUN npm i tmi.js @types/tmi.js graphql-request js-search @types/js-search log-timestamp
-RUN npm install -g ts-node
+RUN npm i tmi.js @types/tmi.js graphql-request graphql js-search @types/js-search log-timestamp
+RUN npm install -g tsx
 
 # Run the application as a non-root user.
 USER node
@@ -27,4 +27,4 @@ COPY . .
 EXPOSE 443
 
 # Run the application.
-CMD ts-node index.ts
+CMD tsx index.mts

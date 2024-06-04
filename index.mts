@@ -1,15 +1,12 @@
 import tmi from 'tmi.js'
 import { request, gql } from 'graphql-request'
 import * as JsSearch from 'js-search'
+import Module from 'node:module'
+const require = Module.createRequire(import.meta.url)
 require('log-timestamp')
 
 /*
-https://id.twitch.tv/oauth2/authorize
-    ?response_type=token
-    &client_id=<YOUR TWITCH APP CLIENT ID>
-    &redirect_uri=https://twitchapps.com/tokengen/
-    &scope=chat:read+chat:edit
-    &state=test
+https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=<YOUR TWITCH APP CLIENT ID>&redirect_uri=https://twitchapps.com/tokengen/&scope=chat:read+chat:edit&state=test
 */
 
 // After creating your app and bot account and logging into it, you can use the above URI to fetch an OAuth token
