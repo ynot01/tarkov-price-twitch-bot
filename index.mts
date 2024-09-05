@@ -12,6 +12,7 @@ https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=<YOUR TWITCH
 // After creating your app and bot account and logging into it, you can use the above URI to fetch an OAuth token
 
 // Define configuration options
+const debug = false
 const opts = {
   identity: {
     username: 'yourbotaccountusername',
@@ -26,6 +27,9 @@ const opts = {
 class ItemNamed {
   name?: string
   shortName?: string
+  avg24hPrice?: number
+  sellFor?: SellForItem[]
+  error?: boolean
 }
 
 class PriceResponse {
@@ -43,12 +47,6 @@ class SellForItem {
   vendor?: Vendor
 }
 
-class ApiResponse {
-  name?: string
-  avg24hPrice?: number
-  sellFor?: SellForItem[]
-}
-
 const RUBFormat = Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'RUB',
@@ -61,21 +59,37 @@ const itemListQuery = gql`
     items {
         name
         shortName
+        avg24hPrice
+        sellFor {
+          priceRUB
+          vendor {name}
+        }
     }
 }
 `
 let itemList: ItemNamed[] = []
 const search = new JsSearch.Search('name')
-void request('https://api.tarkov.dev/graphql', itemListQuery).then((data: any) => {
-  if (data.items === undefined) {
-    return
+search.indexStrategy = new JsSearch.AllSubstringsIndexStrategy()
+function update (): void {
+  void request('https://api.tarkov.dev/graphql', itemListQuery).then((data: any) => {
+    if (data.items === undefined) {
+      return
+    }
+    itemList = data.items
+    search.addDocuments(itemList)
+    search.addIndex('name')
+    search.addIndex('shortName')
+    console.log(`* Refreshed ${itemList.length} items with prices.`)
+  })
+}
+update()
+setInterval(update, 3600000) // one hour
+
+function debugPrint (msg: string): void {
+  if (debug) {
+    console.log(`* [DEBUG] ${msg}`)
   }
-  itemList = data.items
-  search.addDocuments(itemList)
-  search.addIndex('name')
-  search.addIndex('shortName')
-  console.log(`* Indexed ${itemList.length} items.`)
-})
+}
 
 // Create a client with our options
 const client = new tmi.Client(opts)
@@ -121,33 +135,19 @@ function onMessageHandler (channel: string, context: any, msg: string, self: boo
 }
 
 async function priceCheck (query: string, traderOnly: boolean = false): Promise<PriceResponse> {
-  let apiQuery = query
+  let item: ItemNamed | null = null
   if (itemList.length > 0) {
     const searchResult: ItemNamed[] = search.search(query)
     if (searchResult.length > 0 && (searchResult[0].name != null)) {
-      apiQuery = searchResult[0].name
+      item = searchResult[0]
     }
   }
   const reply = new PriceResponse()
-  const escapeQuotes = /"/g
-  const tarkovQuery = gql`
-  {
-      items(limit:1, name: "${apiQuery.replace(escapeQuotes, '\\"')}") {
-          name
-          avg24hPrice
-          sellFor {
-            priceRUB
-            vendor {name}
-          }
-      }
-  }
-  `
-  const data: any = await request('https://api.tarkov.dev/graphql', tarkovQuery)
-  if (data.items === undefined || data.items.length === 0) {
+
+  if (item === null) {
     reply.error = true
     return reply
   }
-  const item: ApiResponse = data.items[0]
   reply.name = item.name ?? 'Unknown item'
   reply.price = 0
   if (item.sellFor != null) {
