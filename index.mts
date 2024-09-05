@@ -71,19 +71,27 @@ let itemList: ItemNamed[] = []
 const search = new JsSearch.Search('name')
 search.indexStrategy = new JsSearch.AllSubstringsIndexStrategy()
 function update (): void {
-  void request('https://api.tarkov.dev/graphql', itemListQuery).then((data: any) => {
-    if (data.items === undefined) {
-      return
-    }
-    itemList = data.items
-    search.addDocuments(itemList)
-    search.addIndex('name')
-    search.addIndex('shortName')
-    console.log(`* Refreshed ${itemList.length} items with prices.`)
-  })
+  let error: boolean = false
+  try {
+    void request('https://api.tarkov.dev/graphql', itemListQuery).then((data: any) => {
+      if (data.items === undefined) {
+        return
+      }
+      itemList = data.items
+      search.addDocuments(itemList)
+      search.addIndex('name')
+      search.addIndex('shortName')
+      console.log(`* Refreshed ${itemList.length} items with prices.`)
+    })
+  } catch {
+    error = true
+    setTimeout(update, 10000) // try again in 10 seconds
+  }
+  if (!error) {
+    setTimeout(update, 3600000) // one hour
+  }
 }
 update()
-setInterval(update, 3600000) // one hour
 
 function debugPrint (msg: string): void {
   if (debug) {
