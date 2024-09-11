@@ -69,7 +69,9 @@ const itemListQuery = gql`
 `
 let itemList: ItemNamed[] = []
 const search = new JsSearch.Search('name')
+const shortSearch = new JsSearch.Search('shortName')
 search.indexStrategy = new JsSearch.AllSubstringsIndexStrategy()
+shortSearch.indexStrategy = new JsSearch.ExactWordIndexStrategy()
 function update (): void {
   let error: boolean = false
   try {
@@ -79,8 +81,10 @@ function update (): void {
       }
       itemList = data.items
       search.addDocuments(itemList)
-      search.addIndex('name')
       search.addIndex('shortName')
+      search.addIndex('name')
+      shortSearch.addDocuments(itemList)
+      shortSearch.addIndex('shortName')
       console.log(`* Refreshed ${itemList.length} items with prices.`)
     })
   } catch {
@@ -145,9 +149,14 @@ function onMessageHandler (channel: string, context: any, msg: string, self: boo
 async function priceCheck (query: string, traderOnly: boolean = false): Promise<PriceResponse> {
   let item: ItemNamed | null = null
   if (itemList.length > 0) {
-    const searchResult: ItemNamed[] = search.search(query)
-    if (searchResult.length > 0 && (searchResult[0].name != null)) {
-      item = searchResult[0]
+    const shortSearchResult: ItemNamed[] = shortSearch.search(query)
+    if (shortSearchResult.length > 0 && (shortSearchResult[0].name != null)) {
+      item = shortSearchResult[0]
+    } else {
+      const searchResult: ItemNamed[] = search.search(query)
+      if (searchResult.length > 0 && (searchResult[0].name != null)) {
+        item = searchResult[0]
+      }
     }
   }
   const reply = new PriceResponse()
@@ -156,7 +165,7 @@ async function priceCheck (query: string, traderOnly: boolean = false): Promise<
     reply.error = true
     return reply
   }
-  reply.name = item.name ?? 'Unknown item'
+  reply.name = (item.name + ' (' + item.shortName + ')') ?? 'Unknown item'
   reply.price = 0
   if (item.sellFor != null) {
     let bestVendor: string = ''
